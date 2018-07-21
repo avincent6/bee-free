@@ -24,6 +24,10 @@ router.post('/messages', (req, res, next) => {
         "callback_id": "wopr_game",
         "color": "#FEE224",
         "attachment_type": "default",
+        "senderEmail": req.body.sender,
+        "recipient": req.body.recipient,
+        "subject": req.body.subject,
+        "bodyPlain": req.body['body-plain'],
         "actions": [
             {
                 "name": "reply",
