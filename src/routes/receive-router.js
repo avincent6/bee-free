@@ -8,10 +8,9 @@ router.post('/', async (req, res, next) => {
 
   const { token, text, trigger_id } = req.body;
   const assignee = await roundRobin();
-  console.log(assignee);
+
   const name = 'Sawyer';
   if (token === process.env.SLACK_VERIFICATION_TOKEN) {
-    console.log('sendConfirmation');
      axios.post('https://slack.com/api/chat.postMessage', qs.stringify({
        token: process.env.SLACK_AUTH_TOKEN,
        channel: assignee,
@@ -19,7 +18,7 @@ router.post('/', async (req, res, next) => {
        attachments: JSON.stringify([{
         "text": "Subject",
               "fallback": "Sorry you were unable to reply",
-              "callback_id": "wopr_game",
+              "callback_id": "reply",
               "color": "#FEE224",
               "attachment_type": "default",
               "actions": [
@@ -52,7 +51,6 @@ async function roundRobin() {
       channel: 'CBUAADA1Y'
     };
     try {
-      console.log((await axios.post('https://slack.com/api/channels.info', qs.stringify(tokenWithChannel))).data.channel.members);
       unassignedUsers = (await axios.post('https://slack.com/api/channels.info', qs.stringify(tokenWithChannel))).data.channel.members;
       return getTheUser();
     } catch (error) {
@@ -67,7 +65,6 @@ async function roundRobin() {
 
 function getTheUser() {
   const user = unassignedUsers[Math.floor((Math.random() * unassignedUsers.length) + 1)];
-  console.log('user', user);
   // unassignedUsers.remove(user);
   if (unassignedUsers.length === 1) {
     unassignedUsers = '';
@@ -76,12 +73,9 @@ function getTheUser() {
   unassignedUsers = unassignedUsers.filter(function(el) {
     return el !== user;
   })
-
-  console.log('user: ', user);
-
-  console.log('Unassigned: ', unassignedUsers);
   return user;
 }
+
 
 const msg = {
     "text": "Hi friend! Bzz Bzz. You've been assigned an email!",

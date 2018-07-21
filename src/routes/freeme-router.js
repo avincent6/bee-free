@@ -56,16 +56,7 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-router.post('/events', (req, res) => {
-  switch (req.body.type) {
-    case 'url_verification': {
-      // verify Events API endpoint by returning challenge if present
-      res.send({ challenge: req.body.challenge });
-      break;
-    }
-    case 'event_callback': {
-      if (req.body.token === process.env.SLACK_VERIFICATION_TOKEN) {
-        const event = req.body.event;
+
 
 
 module.exports = router;
