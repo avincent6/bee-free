@@ -18,6 +18,7 @@
     "body-parser": "^1.18.3",
     "dotenv": "^4.0.0",
     "express": "^4.16.3",
+    "mailgun-js": "^0.20.0",
     "morgan": "^1.9.0",
     "node-json-db": "^0.7.3",
     "querystring": "^0.2.0"
