@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/server.js"
+    "start": "nodemon src/server.js"
   },
   "author": "Sachin Ranchod <sranchod@slack-corp.com>",
   "dependencies": {
@@ -19,5 +19,8 @@
     "morgan": "^1.9.0",
     "node-json-db": "^0.7.3",
     "querystring": "^0.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.3"
   }
 }
