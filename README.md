@@ -1,38 +1,16 @@
-# Slack Terms of Service / Welcome message template
+# BeeFree
+BeeFree reduces bottlenecks in your workflow by managing all blocked tasks for you. Simply send a message to BeeFree with the item you need, the person you need it from, and the urgency of the task—BeeFree will handle the rest! 
 
-Sample Slack app that presents a Terms of Service (or any other message) when a new user joins a team.
-
-The user can accept the Terms of Service using message buttons. If a user has been presented with the Terms before and they haven't accepted, a background job can send them a reminder after a specific period of time. Eventually you can use the SCIM API to disable the user's account.
-
-![term-of-service](https://user-images.githubusercontent.com/700173/27111030-42359a02-5062-11e7-9750-385ae9ca084e.png)
 
 ## Setup
 
-#### Create a Slack app
+## Usage
 
-1. Create an app at api.slack.com/apps
-1. Navigate to the Bot Users page and add a bot user
-1. Navigate to the Install App page and install the app
-1. Copy the `xoxb-` token after the installation process is complete
+## Features
+- BeeFree intelligently notifies the task owner, reminding them as needed, and then sends you a message when the blocking task is complete. 
+- Flag certain tasks so a manager can track them and help clear blockers.
+- Set urgency of blockers so that BeeFree can appropriately prioritize the list sent to coworkers.
+- You have full control over how often BeeFree pings you so your workflow isn’t interrupted. 
 
-#### Run locally or [![Remix on Glitch](https://cdn.glitch.com/2703baf2-b643-4da7-ab91-7ee2a2d00b5b%2Fremix-button.svg)](https://glitch.com/edit/#!/remix/slack-terms-of-service-blueprint)
-1. Get the code
-    * Either clone this repo and run `npm install`
-    * Or visit https://glitch.com/edit/#!/remix/slack-terms-of-service-blueprint
-1. Set the following environment variables to `.env` (see `.env.sample`):
-    * `SLACK_TOKEN`: Your app's `xoxb-` token (available on the Install App page)
-    * `SLACK_VERIFICATION_TOKEN`: Your app's Verification Token (available on the Basic Information page)
-    * `PORT`: The port that you want to run the web server on
-1. If you're running the app locally:
-    1. Start the app (`npm start`)
-    1. In another windown, start ngrok on the same port as your webserver (`ngrok http $PORT`)
 
-#### Enable the Events API
-1. Go back to the app settings and click on Events Subscriptions
-1. Set the Request URL to your ngrok or Glitch URL + /events
-1. On the same page, subscribe to the `team_join` team events
 
-#### Enable Interactive Messages
-
-1. In the app settings, click on Interactive Messages
-1. Set the Request URL to your ngrok or Glitch URL + /interactive-message
