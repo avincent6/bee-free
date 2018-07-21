@@ -15,7 +15,8 @@ router.get('/', async (req, res, next) => {
 router.post('/', (req, res) => {
     console.log(req.body);
     res.json({
-      challenge: req.body.challenge
+      challenge: req.body.challenge,
+      poop: 'poop'
     });
 });
 
