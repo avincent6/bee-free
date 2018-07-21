@@ -1,16 +1,9 @@
 const express = require('express');
 const router = express.Router();
-// const WebClient = require('@slack/client').WebClient;
-// const createSlackEventAdapter = require('@slack/events-api').createSlackEventAdapter;
-// const bot_token = process.env.SLACK_BOT_TOKEN || '';
-// const auth_token = process.env.SLACK_AUTH_TOKEN || '';
-// const slackEvents = createSlackEventAdapter(process.env.SLACK_VERIFICATION_TOKEN);
-// const web = new WebClient(auth_token);
-// const bot = new WebClient(bot_token);
 const axios = require('axios');
 const qs = require('qs');
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res, next) => {
   const { token, text, trigger_id } = req.body;
 
   if (token === process.env.SLACK_VERIFICATION_TOKEN) {
@@ -46,87 +39,55 @@ router.post('/', (req, res) => {
             ],
           },
         ],
-      }),
-    };
+      })
+    }
 
-    // open the dialog by calling dialogs.open method and sending the payload
-    axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
-      .then((result) => {
-        console.log('dialog.open: %o', result.data);
-        res.send('');
-      }).catch((err) => {
-        console.log('dialog.open call failed: %o', err);
-        res.sendStatus(500);
-      });
+    try {
+      let result = await axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog));
+      console.log('dialog.open: %o', result.data);
+      res.send('');
+    } catch(err) {
+      console.log('dialog.open call failed: %o', err);
+      res.sendStatus(500);
+    }
   } else {
     console.log('Verification token mismatch');
     res.sendStatus(500);
   }
 });
 
-router.post('/', (req, res) => {
-    const { trigger_id } = req.body;
-    const dialog = {
-      "callback_id": "ryde-46e2b0",
-      "title": "Request a Ride",
-      "submit_label": "Request",
-      "elements": [
+const msg = {
+    "text": "Hi friend! Bzz Bzz.",
+    "attachments": [
         {
-          "type": "text",
-          "label": "Pickup Location",
-          "name": "loc_origin"
-        },
-        {
-          "type": "text",
-          "label": "Dropoff Location",
-          "name": "loc_destination"
+            "text": "Choose something you need help with:",
+            "fallback": "You are unable to choose a task",
+            "callback_id": "wopr_game",
+            "color": "#3AA3E3",
+            "attachment_type": "default",
+            "actions": [
+                {
+                    "name": "qa",
+                    "text": "Question/Answer",
+                    "type": "button",
+                    "value": "qa"
+                },
+				{
+                    "name": "code",
+                    "text": "Code Snippet",
+                    "type": "button",
+                    "value": "code"
+                },
+				{
+                    "name": "url",
+                    "text": "URL",
+                    "type": "button",
+                    "value": "url"
+                }
+            ]
         }
-      ]
-    };
-    open_dialog = web.dialog.open(
-      "dialog.open",
-      trigger_id,
-      dialog
-    );
-});
+    ]
+}
 
-router.post('/events', (req, res) => {
-  switch (req.body.type) {
-    case 'url_verification': {
-      // verify Events API endpoint by returning challenge if present
-      res.send({ challenge: req.body.challenge });
-      break;
-    }
-    case 'event_callback': {
-      if (req.body.token === process.env.SLACK_VERIFICATION_TOKEN) {
-        const event = req.body.event;
-
-        // `team_join` is fired whenever a new user (incl. a bot) joins the team
-        // check if `event.is_restricted == true` to limit to guest accounts
-        if (event.type === 'team_join' && !event.is_bot) {
-          const { team_id, id } = event.user;
-          onboard.initialMessage(team_id, id);
-        }
-        res.sendStatus(200);
-      } else { res.sendStatus(500); }
-      break;
-    }
-    default: { res.sendStatus(500); }
-  }
-});
-
-/*
- * Endpoint to receive events from interactive message on Slack. Checks the
- * verification token before continuing.
- */
-router.post('/interactive-message', (req, res) => {
-  const { token, user, team } = JSON.parse(req.body.payload);
-  if (token === process.env.SLACK_VERIFICATION_TOKEN) {
-    // simplest case with only a single button in the application
-    // check `callback_id` and `value` if handling multiple buttons
-    onboard.accept(user.id, team.id);
-    res.send({ text: 'Thank you! The Terms of Service have been accepted.' });
-  } else { res.sendStatus(500); }
-});
 
 module.exports = router;
