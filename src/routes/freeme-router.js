@@ -1,23 +1,93 @@
 const express = require('express');
 const router = express.Router();
-
-router.get('/', async (req, res, next) => {
-  res.sendStatus(204);
-});
-
-/*
- * Endpoint to receive events from Slack's Events API.
- * Handles:
- *   - url_verification: Returns challenge token sent when present.
- *   - event_callback: Confirm verification token & handle `team_join` event.
- */
+// const WebClient = require('@slack/client').WebClient;
+// const createSlackEventAdapter = require('@slack/events-api').createSlackEventAdapter;
+// const bot_token = process.env.SLACK_BOT_TOKEN || '';
+// const auth_token = process.env.SLACK_AUTH_TOKEN || '';
+// const slackEvents = createSlackEventAdapter(process.env.SLACK_VERIFICATION_TOKEN);
+// const web = new WebClient(auth_token);
+// const bot = new WebClient(bot_token);
+const axios = require('axios');
+const qs = require('qs');
 
 router.post('/', (req, res) => {
-    console.log(req.body);
-    res.json({
-      challenge: req.body.challenge,
-      poop: 'poop'
-    });
+  const { token, text, trigger_id } = req.body;
+
+  if (token === process.env.SLACK_VERIFICATION_TOKEN) {
+    const dialog = {
+      token: process.env.SLACK_AUTH_TOKEN,
+      trigger_id,
+      dialog: JSON.stringify({
+        title: 'Submit a helpdesk ticket',
+        callback_id: 'submit-ticket',
+        submit_label: 'Submit',
+        elements: [
+          {
+            label: 'Title',
+            type: 'text',
+            name: 'title',
+            value: text,
+            hint: '30 second summary of the problem',
+          },
+          {
+            label: 'Description',
+            type: 'textarea',
+            name: 'description',
+            optional: true,
+          },
+          {
+            label: 'Urgency',
+            type: 'select',
+            name: 'urgency',
+            options: [
+              { label: 'Low', value: 'Low' },
+              { label: 'Medium', value: 'Medium' },
+              { label: 'High', value: 'High' },
+            ],
+          },
+        ],
+      }),
+    };
+
+    // open the dialog by calling dialogs.open method and sending the payload
+    axios.post('https://slack.com/api/dialog.open', qs.stringify(dialog))
+      .then((result) => {
+        console.log('dialog.open: %o', result.data);
+        res.send('');
+      }).catch((err) => {
+        console.log('dialog.open call failed: %o', err);
+        res.sendStatus(500);
+      });
+  } else {
+    console.log('Verification token mismatch');
+    res.sendStatus(500);
+  }
+});
+
+router.post('/', (req, res) => {
+    const { trigger_id } = req.body;
+    const dialog = {
+      "callback_id": "ryde-46e2b0",
+      "title": "Request a Ride",
+      "submit_label": "Request",
+      "elements": [
+        {
+          "type": "text",
+          "label": "Pickup Location",
+          "name": "loc_origin"
+        },
+        {
+          "type": "text",
+          "label": "Dropoff Location",
+          "name": "loc_destination"
+        }
+      ]
+    };
+    open_dialog = web.dialog.open(
+      "dialog.open",
+      trigger_id,
+      dialog
+    );
 });
 
 router.post('/events', (req, res) => {
