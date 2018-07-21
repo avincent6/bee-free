@@ -64,32 +64,6 @@ router.post('/', (req, res) => {
   }
 });
 
-router.post('/', (req, res) => {
-    const { trigger_id } = req.body;
-    const dialog = {
-      "callback_id": "ryde-46e2b0",
-      "title": "Request a Ride",
-      "submit_label": "Request",
-      "elements": [
-        {
-          "type": "text",
-          "label": "Pickup Location",
-          "name": "loc_origin"
-        },
-        {
-          "type": "text",
-          "label": "Dropoff Location",
-          "name": "loc_destination"
-        }
-      ]
-    };
-    open_dialog = web.dialog.open(
-      "dialog.open",
-      trigger_id,
-      dialog
-    );
-});
-
 router.post('/events', (req, res) => {
   switch (req.body.type) {
     case 'url_verification': {
