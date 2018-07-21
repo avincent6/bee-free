@@ -10,6 +10,7 @@ app.use(bodyParser.json());
 app.use('/freeme', require('./freeme-router'));
 app.use('/direct', require('./receive-router'));
 app.use('/api/digest', require('./digest-router'));
+app.use('/mailgun', require('./mailgun-router'));
 
 app.post('/', (req, res) => {
     res.json({

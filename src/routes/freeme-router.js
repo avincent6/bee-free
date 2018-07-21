@@ -56,38 +56,16 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-const msg = {
-    "text": "Hi friend! Bzz Bzz.",
-    "attachments": [
-        {
-            "text": "Choose something you need help with:",
-            "fallback": "You are unable to choose a task",
-            "callback_id": "wopr_game",
-            "color": "#3AA3E3",
-            "attachment_type": "default",
-            "actions": [
-                {
-                    "name": "qa",
-                    "text": "Question/Answer",
-                    "type": "button",
-                    "value": "qa"
-                },
-				{
-                    "name": "code",
-                    "text": "Code Snippet",
-                    "type": "button",
-                    "value": "code"
-                },
-				{
-                    "name": "url",
-                    "text": "URL",
-                    "type": "button",
-                    "value": "url"
-                }
-            ]
-        }
-    ]
-}
+router.post('/events', (req, res) => {
+  switch (req.body.type) {
+    case 'url_verification': {
+      // verify Events API endpoint by returning challenge if present
+      res.send({ challenge: req.body.challenge });
+      break;
+    }
+    case 'event_callback': {
+      if (req.body.token === process.env.SLACK_VERIFICATION_TOKEN) {
+        const event = req.body.event;
 
 
 module.exports = router;
