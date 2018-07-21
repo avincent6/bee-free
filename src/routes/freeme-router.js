@@ -5,7 +5,6 @@ router.get('/', async (req, res, next) => {
   res.sendStatus(204);
 });
 
-module.exports = router;
 /*
  * Endpoint to receive events from Slack's Events API.
  * Handles:
@@ -13,11 +12,11 @@ module.exports = router;
  *   - event_callback: Confirm verification token & handle `team_join` event.
  */
 
-router.get('/freeme', (req, res) => {
-    if (req) {
-      console.log(req.body);
-    }
-    else { res.sendStatus(500); }
+router.post('/', (req, res) => {
+    console.log(req.body);
+    res.json({
+      challenge: req.body.challenge
+    });
 });
 
 router.post('/events', (req, res) => {
@@ -58,3 +57,5 @@ router.post('/interactive-message', (req, res) => {
     res.send({ text: 'Thank you! The Terms of Service have been accepted.' });
   } else { res.sendStatus(500); }
 });
+
+module.exports = router;
