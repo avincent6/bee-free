@@ -5,6 +5,12 @@ const bodyParser = require('body-parser');
 const onboard = require('./onboard');
 
 const app = express();
+const clientId = '369235392373.402816505733'
+const clientSecret = '140500a003a18dc60443f0cd39184723'
+process.env.SLACK_TOKEN = 'xoxp-369235392373-393727502928-404000949302-bd216bac004aa034b0c6283adbf44809'
+process.env.SLACK_VERIFICATION_TOKEN = 'lhnzO34VzhiVL8CI2iZ9sdjY'
+process.env.PORT = 5000
+
 
 /*
  * parse application/x-www-form-urlencoded && application/json
