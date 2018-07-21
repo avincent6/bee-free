@@ -37,10 +37,15 @@ app.post('/commands', (req, res) => {
       token: process.env.SLACK_ACCESS_TOKEN,
       trigger_id,
       dialog: JSON.stringify({
-        title: 'Submit a helpdesk ticket',
+        title: 'Submit a BeeFree ticket',
         callback_id: 'submit-ticket',
         submit_label: 'Submit',
         elements: [
+          {
+            label: 'Blocking User',
+            type: 'text',
+            name: 'block_user',
+          },
           {
             label: 'Title',
             type: 'text',
