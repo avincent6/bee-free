@@ -6,6 +6,18 @@ router.get('/', async (req, res, next) => {
 });
 
 module.exports = router;
+
+// Save data from dialog box
+
+// Listen on dialog "post" end point
+
+// if message_action "type" == dialog_submission -> SaveData
+
+
+function saveData(
+
+
+
 // /*
 //  * Endpoint to receive events from Slack's Events API.
 //  * Handles:
