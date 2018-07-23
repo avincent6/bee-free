@@ -16,7 +16,7 @@ router.post('/', async (req, res, next) => {
        channel: assignee,
        text: `Bzz! Bzz! Hey, you've been assigned an email`,
        attachments: JSON.stringify([{
-        "text": "Subject",
+        "text": "This is the entire email hello",
               "fallback": "Sorry you were unable to reply",
               "callback_id": "reply",
               "color": "#FEE224",

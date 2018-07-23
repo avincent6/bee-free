@@ -11,32 +11,35 @@ router.post('/', async (req, res, next) => {
       token: process.env.SLACK_AUTH_TOKEN,
       trigger_id,
       dialog: JSON.stringify({
-        title: 'Submit a helpdesk ticket',
-        callback_id: 'submit-ticket',
+        title: 'Respond to the email below',
+        callback_id: 'submit-email',
         submit_label: 'Submit',
         elements: [
           {
-            label: 'Title',
+            label: 'From',
+            type: 'text',
+            name: 'from',
+            value: from,
+            hint: 'Person who sent the email',
+          },
+         {
+            label: 'Subject',
             type: 'text',
             name: 'title',
-            value: text,
-            hint: '30 second summary of the problem',
+            value: subject,
+            hint: 'Subject of the email',
           },
           {
-            label: 'Description',
+            label: 'Body',
+            type: 'text',
+            name: 'Body of email you were sent',
+            value: bodyplain,
+          },
+          {
+            label: 'Your response',
             type: 'textarea',
-            name: 'description',
+            name: 'Body of email you are composing',
             optional: true,
-          },
-          {
-            label: 'Urgency',
-            type: 'select',
-            name: 'urgency',
-            options: [
-              { label: 'Low', value: 'Low' },
-              { label: 'Medium', value: 'Medium' },
-              { label: 'High', value: 'High' },
-            ],
           },
         ],
       })

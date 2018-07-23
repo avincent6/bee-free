@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 const mailgun = require('mailgun-js')({ apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN });
+const qs = require('qs');
 var unassignedUsers;
 
-router.post('/messages', (req, res, next) => {
+router.post('/messages', async (req, res, next) => {
   const receivedEmail = {
     senderEmail: req.body.sender,
     recipient: req.body.recipient,
@@ -19,21 +20,32 @@ router.post('/messages', (req, res, next) => {
      channel: assignee,
      text: `Bzz! Bzz! Hey, you've been assigned an email`,
      attachments: JSON.stringify([{
-        "text": receivedEmail.subject,
+        "text": receivedEmail.subject + '\n\n' + receivedEmail.bodyPlain,
         "fallback": "Sorry you were unable to reply",
         "callback_id": "wopr_game",
         "color": "#FEE224",
         "attachment_type": "default",
-        "senderEmail": req.body.sender,
-        "recipient": req.body.recipient,
-        "subject": req.body.subject,
-        "bodyPlain": req.body['body-plain'],
         "actions": [
             {
                 "name": "reply",
-                "text": "Reply",
+                "text": "Custom Reply",
                 "type": "button",
-                "value": "reply"
+                "value": req.body.sender + '----' + req.body.recipient + '----' + req.body.subject + '----'
+                    + req.body['body-plain'] + '---- '
+            },
+            {
+                "name": "reply",
+                "text": "Underage",
+                "type": "button",
+                "value": req.body.sender + '----' + req.body.recipient + '----' + req.body.subject + '----'
+                    + req.body['body-plain'] + '----age'
+            },
+            {
+                "name": "reply",
+                "text": "Time",
+                "type": "button",
+                "value": req.body.sender + '----' + req.body.recipient + '----' + req.body.subject + '----'
+                    + req.body['body-plain'] + '----time'
             }
         ]
      }
@@ -85,5 +97,26 @@ function getTheUser() {
   })
   return user;
 }
+
+async function roundRobin() {
+  if (unassignedUsers === undefined || unassignedUsers.length == 0) {
+    // Reset unassignedUsers!
+    const channelID = 'CBUAADA1Y';
+    const tokenWithChannel = {
+      token: process.env.SLACK_AUTH_TOKEN,
+      channel: 'CBUAADA1Y'
+    };
+    try {
+      unassignedUsers = (await axios.post('https://slack.com/api/channels.info', qs.stringify(tokenWithChannel))).data.channel.members;
+      return getTheUser();
+    } catch (error) {
+      console.log('error', error);
+    }
+  } else {
+    return getTheUser();
+  }
+  // Do the Round Robin:
+
+};
 
 module.exports = router;
